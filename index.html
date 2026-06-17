@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Twins Web & App Hub</title>
+<title>Twinz Web & App Hub - Twinz Cooperate Services</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
@@ -23,6 +23,7 @@
     background: var(--bg); 
     color: var(--text);
     line-height: 1.6;
+    padding-bottom: 80px;
   }
 
   header {
@@ -32,6 +33,17 @@
     text-align: center;
   }
 
+  .logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: white;
+    padding: 8px;
+    margin: 0 auto 15px;
+    border: 3px solid white;
+    object-fit: cover;
+  }
+
   header h1 {
     font-size: 2rem;
     margin-bottom: 8px;
@@ -39,6 +51,19 @@
 
   header p {
     opacity: 0.9;
+    font-size: 0.9rem;
+  }
+
+  .company-info {
+    background: var(--card);
+    color: var(--text);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    font-size: 0.85rem;
+    border: 2px solid var(--border);
   }
 
   .container {
@@ -223,6 +248,21 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   }
 
+  .business-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .business-card-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: white;
+    padding: 5px;
+    object-fit: cover;
+  }
+
   .business-card h3 {
     font-size: 1.5rem;
     margin-bottom: 5px;
@@ -249,13 +289,31 @@
     font-size: 0.8rem;
     font-weight: 600;
   }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--primary-dark);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 0.8rem;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Twins Web & App Hub</h1>
+  <img src="https://files.catbox.moe/5nvz2o.jpg" alt="Twinz Logo" class="logo">
+  <h1>Twinz Web & App Hub</h1>
   <p>Client Management • Invoices • Business Cards</p>
+  <div class="company-info">
+    <b>Twinz Cooperate Services Pty Ltd</b><br>
+    Reg No: 2024/444303/07 | VAT: 9819040198<br>
+    📞 068 254 7352 | 069 894 9596
+  </div>
 </header>
 
 <div class="container">
@@ -363,17 +421,21 @@
   <!-- BUSINESS CARD TAB -->
   <div id="business-card" class="tab-content">
     <div class="card">
-      <h3>Twins Web & App Business Card</h3>
+      <h3>Twinz Web & App Business Card</h3>
       <div class="print-area">
         <div class="business-card" id="businessCard">
-          <div>
-            <h3>Twins Web & App</h3>
-            <p>Web & Mobile App Development</p>
+          <div class="business-card-header">
+            <img src="https://files.catbox.moe/5nvz2o.jpg" alt="Logo" class="business-card-logo">
+            <div>
+              <h3>Twinz Web & App</h3>
+              <p>Twinz Cooperate Services Pty Ltd</p>
+              <p style="font-size: 0.8rem;">Reg: 2024/444303/07</p>
+            </div>
           </div>
           <div>
-            <p>📞 072 957 4064</p>
-            <p>📧 twinswebapp@gmail.com</p>
-            <p>🌐 twinswebapp.com</p>
+            <p>📞 068 254 7352</p>
+            <p>📧 twinzwebapp@gmail.com</p>
+            <p>🌐 twinzwebapp.com</p>
           </div>
         </div>
       </div>
@@ -385,15 +447,19 @@
   </div>
 </div>
 
+<footer class="no-print">
+  Twinz Cooperate Services Pty Ltd | Reg: 2024/444303/07 | VAT: 9819040198 | 📞 068 254 7352 / 069 894 9596
+</footer>
+
 <script>
-let clients = JSON.parse(localStorage.getItem('twins_clients') || '[]');
-let invoices = JSON.parse(localStorage.getItem('twins_invoices') || '[]');
+let clients = JSON.parse(localStorage.getItem('twinz_clients') || '[]');
+let invoices = JSON.parse(localStorage.getItem('twinz_invoices') || '[]');
 
 document.getElementById('invoiceDate').valueAsDate = new Date();
 
 function saveData() {
-  localStorage.setItem('twins_clients', JSON.stringify(clients));
-  localStorage.setItem('twins_invoices', JSON.stringify(invoices));
+  localStorage.setItem('twinz_clients', JSON.stringify(clients));
+  localStorage.setItem('twinz_invoices', JSON.stringify(invoices));
 }
 
 function showTab(tab) {
@@ -513,28 +579,44 @@ function generateInvoice() {
   saveData();
   renderInvoices();
   
-  // Generate PDF
+  // Generate PDF with logo
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   
-  doc.setFontSize(20);
-  doc.text('Twins Web & App', 20, 20);
+  doc.setFontSize(18);
+  doc.text('Twinz Cooperate Services Pty Ltd', 20, 20);
   doc.setFontSize(12);
-  doc.text('Invoice', 20, 30);
+  doc.text('Reg No: 2024/444303/07 | VAT No: 9819040198', 20, 28);
+  doc.text('Contact: 068 254 7352 / 069 894 9596', 20, 35);
   
-  doc.text(`Invoice No: ${invoice.invoiceNum}`, 20, 50);
-  doc.text(`Date: ${invoice.date}`, 20, 60);
-  doc.text(`Client: ${invoice.clientName}`, 20, 70);
+  doc.setFontSize(16);
+  doc.text('INVOICE', 20, 50);
   
-  doc.line(20, 80, 190, 80);
-  doc.text('Service', 20, 90);
-  doc.text('Amount', 150, 90);
+  doc.setFontSize(11);
+  doc.text(`Invoice No: ${invoice.invoiceNum}`, 20, 65);
+  doc.text(`Date: ${invoice.date}`, 20, 72);
+  doc.text(`Client: ${invoice.clientName}`, 20, 79);
+  
+  doc.line(20, 85, 190, 85);
+  doc.text('Service/Item', 20, 92);
+  doc.text('Amount', 150, 92);
   doc.text(invoice.item, 20, 100);
   doc.text(`R ${invoice.amount}`, 150, 100);
-  doc.line(20, 110, 190, 110);
+  doc.line(20, 105, 190, 105);
   
-  doc.text(`Total: R ${invoice.amount}`, 150, 120);
-  doc.text(`Notes: ${invoice.notes}`, 20, 140);
+  doc.setFontSize(12);
+  doc.text(`Total: R ${invoice.amount}`, 150, 115);
+  
+  doc.setFontSize(10);
+  doc.text(`Notes: ${invoice.notes}`, 20, 130);
+  
+  doc.line(20, 145, 190, 145);
+  doc.setFontSize(9);
+  doc.text('Banking Details:', 20, 152);
+  doc.text('Bank: Standard Bank', 20, 159);
+  doc.text('Account No: 10 26 459 443 4', 20, 166);
+  doc.text('Branch Code: 006145', 20, 173);
+  doc.text('Account Name: Twinz Cooperate Services Pty Ltd', 20, 180);
   
   doc.save(`${invoice.invoiceNum}.pdf`);
 }
@@ -560,12 +642,16 @@ function renderInvoices() {
 function downloadCard() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.text('Twins Web & App', 20, 30);
-  doc.text('Web & Mobile App Development', 20, 40);
-  doc.text('Phone: 072 957 4064', 20, 60);
-  doc.text('Email: twinswebapp@gmail.com', 20, 70);
-  doc.text('Web: twinswebapp.com', 20, 80);
-  doc.save('Twins-Business-Card.pdf');
+  doc.setFontSize(18);
+  doc.text('Twinz Web & App', 20, 30);
+  doc.setFontSize(11);
+  doc.text('Twinz Cooperate Services Pty Ltd', 20, 40);
+  doc.text('Reg: 2024/444303/07 | VAT: 9819040198', 20, 47);
+  doc.text('Web & Mobile App Development', 20, 57);
+  doc.text('Phone: 068 254 7352 / 069 894 9596', 20, 70);
+  doc.text('Email: twinzwebapp@gmail.com', 20, 77);
+  doc.text('Web: twinzwebapp.com', 20, 84);
+  doc.save('Twinz-Business-Card.pdf');
 }
 
 updateClientDropdowns();
