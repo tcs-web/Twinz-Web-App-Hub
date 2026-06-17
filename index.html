@@ -247,41 +247,57 @@
 
   .business-card {
     width: 350px;
-    height: 200px;
+    height: 220px;
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
     color: white;
-    padding: 25px;
+    padding: 20px;
     border-radius: 16px;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
+    align-items: center;
     margin: 20px auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  .business-card-left {
+    flex: 1;
   }
 
   .business-card-header {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
+    margin-bottom: 8px;
   }
 
   .business-card-logo {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: white;
-    padding: 5px;
+    padding: 4px;
     object-fit: cover;
   }
 
   .business-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 5px;
+    font-size: 1.3rem;
+    margin-bottom: 3px;
   }
 
   .business-card p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     opacity: 0.9;
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+
+  .qr-code {
+    width: 80px;
+    height: 80px;
+    background: white;
+    padding: 5px;
+    border-radius: 8px;
+    margin-left: 15px;
   }
 
   @media print {
@@ -419,7 +435,7 @@
         </div>
         <div class="form-group">
           <label>Notes</label>
-          <input type="text" id="invoiceNotes" placeholder="Payment terms, etc">
+          <input type="text" id="invoiceNotes">
         </div>
       </div>
       <button onclick="generateInvoice()">Generate & Download PDF</button>
@@ -435,19 +451,22 @@
       <h3>Twinz Web & App Business Card</h3>
       <div class="print-area">
         <div class="business-card" id="businessCard">
-          <div class="business-card-header">
-            <img src="https://files.catbox.moe/5nvz2o.jpg" alt="Logo" class="business-card-logo">
+          <div class="business-card-left">
+            <div class="business-card-header">
+              <img src="https://files.catbox.moe/5nvz2o.jpg" alt="Logo" class="business-card-logo">
+              <div>
+                <h3>Twinz Web & App</h3>
+                <p style="font-size: 0.75rem;">Twinz Cooperate Services Pty Ltd</p>
+                <p style="font-size: 0.7rem;">Reg: 2024/444303/07</p>
+              </div>
+            </div>
             <div>
-              <h3>Twinz Web & App</h3>
-              <p>Twinz Cooperate Services Pty Ltd</p>
-              <p style="font-size: 0.8rem;">Reg: 2024/444303/07</p>
+              <p>📞 068 254 7352 / 069 894 9596</p>
+              <p>📧 twinz.cooperate.services@gmail.com</p>
+              <p>🌐 Scan QR for website</p>
             </div>
           </div>
-          <div>
-            <p>📞 068 254 7352 / 069 894 9596</p>
-            <p>📧 twinz.cooperate.services@gmail.com</p>
-            <p>🌐 twinzwebapp.com</p>
-          </div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tcs-web.github.io/Twinz-Cooperate-Services-website/" alt="QR Code" class="qr-code">
         </div>
       </div>
       <div style="text-align: center; margin-top: 20px;">
@@ -466,6 +485,7 @@
 let clients = JSON.parse(localStorage.getItem('twinz_clients') || '[]');
 let invoices = JSON.parse(localStorage.getItem('twinz_invoices') || '[]');
 let logoBase64 = '';
+let qrBase64 = '';
 
 document.getElementById('invoiceDate').valueAsDate = new Date();
 
@@ -484,6 +504,22 @@ function loadLogo() {
   img.src = img.src;
 }
 loadLogo();
+
+// Convert QR to base64 for PDF
+function loadQR() {
+  const img = new Image();
+  img.onload = function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    qrBase64 = canvas.toDataURL('image/png');
+  }
+  img.crossOrigin = 'anonymous';
+  img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tcs-web.github.io/Twinz-Cooperate-Services-website/';
+}
+loadQR();
 
 function saveData() {
   localStorage.setItem('twinz_clients', JSON.stringify(clients));
@@ -577,15 +613,11 @@ function renderClients() {
 
 function deleteClient(id) {
   if(confirm('Delete this client?')) {
-    clients = filterClientsById(id);
+    clients = clients.filter(c => c.id !== id);
     saveData();
     renderClients();
     updateClientDropdowns();
   }
-}
-
-function filterClientsById(id) {
-  return clients.filter(c => c.id !== id);
 }
 
 function updateClientDropdowns() {
@@ -685,6 +717,10 @@ function downloadCard() {
     doc.addImage(logoBase64, 'JPEG', 150, 15, 35, 35);
   }
   
+  if(qrBase64) {
+    doc.addImage(qrBase64, 'PNG', 150, 55, 40, 40);
+  }
+  
   doc.setFontSize(18);
   doc.text('Twinz Web & App', 20, 30);
   doc.setFontSize(11);
@@ -693,7 +729,8 @@ function downloadCard() {
   doc.text('Web & Mobile App Development', 20, 57);
   doc.text('Phone: 068 254 7352 / 069 894 9596', 20, 70);
   doc.text('Email: twinz.cooperate.services@gmail.com', 20, 77);
-  doc.text('Web: twinzwebapp.com', 20, 84);
+  doc.text('Scan QR code to visit website', 20, 90);
+  
   doc.save('Twinz-Business-Card.pdf');
 }
 
