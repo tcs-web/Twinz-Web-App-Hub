@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Twins Web & App Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #1e5aad;
+    --primary-dark: #0a2a5c;
+    --accent: #00b4d8;
+    --success: #25D366;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --border: #e2e8f0;
+  }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  
+  body { 
+    background: var(--bg); 
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  header p {
+    opacity: 0.9;
+  }
+
+  .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 30px 20px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    padding: 12px 24px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .tab-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .card {
+    background: var(--card);
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+  }
+
+  .grid {
+    display: grid;
+    gap: 20px;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  button {
+    padding: 12px 24px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+
+  .btn-success {
+    background: var(--success);
+  }
+
+  .btn-danger {
+    background: #ef4444;
+  }
+
+  .btn-secondary {
+    background: #64748b;
+  }
+
+  .client-card {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    margin-bottom: 15px;
+    transition: all 0.3s;
+  }
+
+  .client-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 15px rgba(30,90,173,0.15);
+  }
+
+  .client-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .client-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .link-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .link-whatsapp {
+    background: var(--success);
+    color: white;
+  }
+
+  .link-email {
+    background: var(--primary);
+    color: white;
+  }
+
+  .project-item {
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .invoice-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .business-card {
+    width: 350px;
+    height: 200px;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 20px auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  .business-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+  }
+
+  .business-card p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+  }
+
+  @media print {
+    body * { visibility: hidden; }
+    .print-area, .print-area * { visibility: visible; }
+    .print-area { position: absolute; left: 0; top: 0; }
+    .no-print { display: none !important; }
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--accent);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Twins Web & App Hub</h1>
+  <p>Client Management • Invoices • Business Cards</p>
+</header>
+
+<div class="container">
+  <div class="tabs no-print">
+    <button class="tab-btn active" onclick="showTab('clients')">Clients</button>
+    <button class="tab-btn" onclick="showTab('invoices')">Invoices</button>
+    <button class="tab-btn" onclick="showTab('business-card')">Business Card</button>
+  </div>
+
+  <!-- CLIENTS TAB -->
+  <div id="clients" class="tab-content active">
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Add New Client</h3>
+        <div class="form-group">
+          <label>Client Name</label>
+          <input type="text" id="clientName" placeholder="e.g. Aquapure Still Water">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="clientEmail" placeholder="client@email.com">
+        </div>
+        <div class="form-group">
+          <label>Phone/WhatsApp</label>
+          <input type="text" id="clientPhone" placeholder="27729574064">
+        </div>
+        <div class="form-group">
+          <label>Website URL</label>
+          <input type="url" id="clientWebsite" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>App URL / Notes</label>
+          <input type="text" id="clientApp" placeholder="Play Store link or notes">
+        </div>
+        <button onclick="addClient()">Add Client</button>
+      </div>
+
+      <div class="card">
+        <h3>Add Project to Client</h3>
+        <div class="form-group">
+          <label>Select Client</label>
+          <select id="projectClient"></select>
+        </div>
+        <div class="form-group">
+          <label>Project Name</label>
+          <input type="text" id="projectName" placeholder="e.g. E-commerce Website">
+        </div>
+        <div class="form-group">
+          <label>Project Link</label>
+          <input type="url" id="projectLink" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="projectStatus">
+            <option>Active</option>
+            <option>Completed</option>
+            <option>In Progress</option>
+          </select>
+        </div>
+        <button onclick="addProject()">Add Project</button>
+      </div>
+    </div>
+
+    <h3 style="margin: 30px 0 15px;">All Clients</h3>
+    <div id="clientsList"></div>
+  </div>
+
+  <!-- INVOICES TAB -->
+  <div id="invoices" class="tab-content">
+    <div class="card">
+      <h3>Create Invoice</h3>
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label>Select Client</label>
+          <select id="invoiceClient"></select>
+        </div>
+        <div class="form-group">
+          <label>Invoice Number</label>
+          <input type="text" id="invoiceNum" value="INV-001">
+        </div>
+        <div class="form-group">
+          <label>Service/Item</label>
+          <input type="text" id="invoiceItem" placeholder="Website Design">
+        </div>
+        <div class="form-group">
+          <label>Amount (R)</label>
+          <input type="number" id="invoiceAmount" placeholder="2500">
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="invoiceDate">
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <input type="text" id="invoiceNotes" placeholder="Payment terms, etc">
+        </div>
+      </div>
+      <button onclick="generateInvoice()">Generate & Download PDF</button>
+    </div>
+
+    <h3 style="margin: 30px 0 15px;">Invoice History</h3>
+    <div id="invoiceHistory"></div>
+  </div>
+
+  <!-- BUSINESS CARD TAB -->
+  <div id="business-card" class="tab-content">
+    <div class="card">
+      <h3>Twins Web & App Business Card</h3>
+      <div class="print-area">
+        <div class="business-card" id="businessCard">
+          <div>
+            <h3>Twins Web & App</h3>
+            <p>Web & Mobile App Development</p>
+          </div>
+          <div>
+            <p>📞 072 957 4064</p>
+            <p>📧 twinswebapp@gmail.com</p>
+            <p>🌐 twinswebapp.com</p>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button onclick="window.print()" class="no-print">Print Business Card</button>
+        <button onclick="downloadCard()" class="no-print btn-secondary">Download as PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let clients = JSON.parse(localStorage.getItem('twins_clients') || '[]');
+let invoices = JSON.parse(localStorage.getItem('twins_invoices') || '[]');
+
+document.getElementById('invoiceDate').valueAsDate = new Date();
+
+function saveData() {
+  localStorage.setItem('twins_clients', JSON.stringify(clients));
+  localStorage.setItem('twins_invoices', JSON.stringify(invoices));
+}
+
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  event.target.classList.add('active');
+  if(tab === 'clients') renderClients();
+  if(tab === 'invoices') renderInvoices();
+}
+
+function addClient() {
+  const client = {
+    id: Date.now(),
+    name: document.getElementById('clientName').value,
+    email: document.getElementById('clientEmail').value,
+    phone: document.getElementById('clientPhone').value,
+    website: document.getElementById('clientWebsite').value,
+    app: document.getElementById('clientApp').value,
+    projects: []
+  };
+  
+  if(!client.name) return alert('Enter client name');
+  clients.push(client);
+  saveData();
+  renderClients();
+  updateClientDropdowns();
+  
+  document.querySelectorAll('#clients input').forEach(i => i.value = '');
+  alert('Client added!');
+}
+
+function addProject() {
+  const clientId = parseInt(document.getElementById('projectClient').value);
+  const project = {
+    name: document.getElementById('projectName').value,
+    link: document.getElementById('projectLink').value,
+    status: document.getElementById('projectStatus').value
+  };
+  
+  const client = clients.find(c => c.id === clientId);
+  if(client) {
+    client.projects.push(project);
+    saveData();
+    renderClients();
+    alert('Project added!');
+  }
+}
+
+function renderClients() {
+  const list = document.getElementById('clientsList');
+  if(clients.length === 0) {
+    list.innerHTML = '<p>No clients yet. Add your first client above.</p>';
+    return;
+  }
+  
+  list.innerHTML = clients.map(client => `
+    <div class="client-card">
+      <div class="client-header">
+        <div>
+          <h4>${client.name}</h4>
+          <p style="color: #64748b; font-size: 0.9rem;">${client.email} • ${client.phone}</p>
+        </div>
+        <button class="btn-danger" onclick="deleteClient(${client.id})">Delete</button>
+      </div>
+      
+      <div class="client-links">
+        ${client.phone ? `<a href="https://wa.me/${client.phone}" target="_blank" class="link-btn link-whatsapp">WhatsApp</a>` : ''}
+        ${client.email ? `<a href="mailto:${client.email}" class="link-btn link-email">Email</a>` : ''}
+        ${client.website ? `<a href="${client.website}" target="_blank" class="link-btn" style="background: #64748b; color: white;">Website</a>` : ''}
+      </div>
+      
+      <div style="margin-top: 15px;">
+        <strong>Projects:</strong>
+        ${client.projects.length === 0 ? '<p style="color: #64748b;">No projects yet</p>' : 
+          client.projects.map(p => `
+            <div class="project-item">
+              <strong>${p.name}</strong> <span class="badge">${p.status}</span><br>
+              ${p.link ? `<a href="${p.link}" target="_blank">${p.link}</a>` : ''}
+            </div>
+          `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteClient(id) {
+  if(confirm('Delete this client?')) {
+    clients = clients.filter(c => c.id !== id);
+    saveData();
+    renderClients();
+    updateClientDropdowns();
+  }
+}
+
+function updateClientDropdowns() {
+  const options = clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('projectClient').innerHTML = options;
+  document.getElementById('invoiceClient').innerHTML = options;
+}
+
+function generateInvoice() {
+  const clientId = parseInt(document.getElementById('invoiceClient').value);
+  const client = clients.find(c => c.id === clientId);
+  
+  const invoice = {
+    id: Date.now(),
+    clientName: client.name,
+    invoiceNum: document.getElementById('invoiceNum').value,
+    item: document.getElementById('invoiceItem').value,
+    amount: document.getElementById('invoiceAmount').value,
+    date: document.getElementById('invoiceDate').value,
+    notes: document.getElementById('invoiceNotes').value
+  };
+  
+  invoices.push(invoice);
+  saveData();
+  renderInvoices();
+  
+  // Generate PDF
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFontSize(20);
+  doc.text('Twins Web & App', 20, 20);
+  doc.setFontSize(12);
+  doc.text('Invoice', 20, 30);
+  
+  doc.text(`Invoice No: ${invoice.invoiceNum}`, 20, 50);
+  doc.text(`Date: ${invoice.date}`, 20, 60);
+  doc.text(`Client: ${invoice.clientName}`, 20, 70);
+  
+  doc.line(20, 80, 190, 80);
+  doc.text('Service', 20, 90);
+  doc.text('Amount', 150, 90);
+  doc.text(invoice.item, 20, 100);
+  doc.text(`R ${invoice.amount}`, 150, 100);
+  doc.line(20, 110, 190, 110);
+  
+  doc.text(`Total: R ${invoice.amount}`, 150, 120);
+  doc.text(`Notes: ${invoice.notes}`, 20, 140);
+  
+  doc.save(`${invoice.invoiceNum}.pdf`);
+}
+
+function renderInvoices() {
+  const list = document.getElementById('invoiceHistory');
+  if(invoices.length === 0) {
+    list.innerHTML = '<p>No invoices yet.</p>';
+    return;
+  }
+  
+  list.innerHTML = invoices.map(inv => `
+    <div class="invoice-item">
+      <div>
+        <strong>${inv.invoiceNum}</strong> - ${inv.clientName}<br>
+        <small>${inv.item} • ${inv.date}</small>
+      </div>
+      <strong>R ${inv.amount}</strong>
+    </div>
+  `).join('');
+}
+
+function downloadCard() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text('Twins Web & App', 20, 30);
+  doc.text('Web & Mobile App Development', 20, 40);
+  doc.text('Phone: 072 957 4064', 20, 60);
+  doc.text('Email: twinswebapp@gmail.com', 20, 70);
+  doc.text('Web: twinswebapp.com', 20, 80);
+  doc.save('Twins-Business-Card.pdf');
+}
+
+updateClientDropdowns();
+renderClients();
+renderInvoices();
+</script>
+
+</body>
+</html>
